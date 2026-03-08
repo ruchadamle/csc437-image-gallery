@@ -1,0 +1,37 @@
+### Get all images
+GET http://localhost:3000/api/images
+
+### Get one image by ID (replace with an ID from your DB)
+GET http://localhost:3000/api/images/69ace105da34209d3166e9f6
+
+### Rename image (success: 204 No Content)
+PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
+Content-Type: application/json
+
+{
+  "name": "Sheepdog herding a sheep"
+}
+
+### Rename image bad request (400: missing required 'name' string field)
+PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
+Content-Type: application/json
+
+{
+  "title": "Wrong field name"
+}
+
+### Rename image not found (404: valid ObjectId, likely does not exist)
+PATCH http://localhost:3000/api/images/000000000000000000000000
+Content-Type: application/json
+
+{
+  "name": "Does not matter"
+}
+
+### Rename image too large (413: name over 100 chars)
+PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
+Content-Type: application/json
+
+{
+  "name": "iamwaytoooooooooooooooooooooooooooooooooooooooooooooooooooooloooooooooooooooooooooooooooooooonggggggggggggg"
+}

@@ -1,10 +1,51 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useImages } from "./useImages.js";
+import { fetchOne } from "./ImageFetcher.js";
+import { ImageNameEditor } from "./ImageNameEditor.jsx";
 
 export function ImageDetails() {
     const { imageId } = useParams();
-    const { imageData, isLoading, error } = useImages();
-    const image = imageData.find((imageEntry) => String(imageEntry._id ?? imageEntry.id) === imageId);
+    const [imageData, setImageData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        let isActive = true;
+
+        async function doFetch() {
+            setIsLoading(true);
+            setError("");
+
+            try {
+                if (!imageId) {
+                    if (isActive) {
+                        setImageData(null);
+                        setError("Image ID is missing");
+                    }
+                    return;
+                }
+
+                const fetchedImage = await fetchOne(imageId);
+                if (isActive) {
+                    setImageData(fetchedImage);
+                }
+            } catch (err) {
+                if (isActive) {
+                    setError(err instanceof Error ? err.message : String(err));
+                }
+            } finally {
+                if (isActive) {
+                    setIsLoading(false);
+                }
+            }
+        }
+
+        doFetch();
+
+        return () => {
+            isActive = false;
+        };
+    }, [imageId]);
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -14,17 +55,26 @@ export function ImageDetails() {
         return <p>{error}</p>;
     }
 
-    if (!image) {
+    if (!imageData) {
         return <h2>Image not found</h2>;
     }
 
-    const authorDisplayName = image.author?.username ?? image.authorId ?? "Unknown";
+    const authorDisplayName = imageData.author?.username ?? imageData.authorId ?? "Unknown";
 
     return (
         <>
-            <h2>{image.name}</h2>
+            <h2>{imageData.name}</h2>
             <p>By {authorDisplayName}</p>
-            <img className="ImageDetails-img" src={image.src} alt={image.name} />
+            <ImageNameEditor
+                imageId={String(imageData._id ?? imageId)}
+                initialValue={imageData.name}
+                onRenameSuccess={newName => {
+                    setImageData(prevImage =>
+                        prevImage ? { ...prevImage, name: newName } : prevImage
+                    );
+                }}
+            />
+            <img className="ImageDetails-img" src={imageData.src} alt={imageData.name} />
         </>
     );
 }
