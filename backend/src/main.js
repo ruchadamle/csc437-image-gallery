@@ -6,6 +6,7 @@ import { connectMongo } from "../connectMongo.js";
 import { VALID_ROUTES } from "../../shared/ValidRoutes.js";
 import { registerImageRoutes } from "./routes/imageRoutes.js";
 import { registerAuthRoutes } from "./routes/authRoutes.js";
+import { verifyAuthToken } from "./routes/verifyAuthToken.js";
 
 const PORT = Number.parseInt(getEnvVar("PORT", false), 10) || 3000;
 const STATIC_DIR = getEnvVar("STATIC_DIR") || "public";
@@ -22,6 +23,7 @@ app.get("/api/hello", (req, res) => {
     res.send("Hello world");
 });
 
+app.use("/api/images", verifyAuthToken);
 registerImageRoutes(app, imageProvider);
 registerAuthRoutes(app, credentialsProvider);
 

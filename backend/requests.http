@@ -1,28 +1,53 @@
 ### Get all images
 GET http://localhost:3000/api/images
 
-### Get one image by ID
-GET http://localhost:3000/api/images/69ace105da34209d3166e9f6
+### Get all images with token
+GET http://localhost:3000/api/images
+Authorization: Bearer REPLACE_WITH_JWT
 
-### Rename image
+### Get one image by ID with token
+GET http://localhost:3000/api/images/69ace105da34209d3166e9f6
+Authorization: Bearer REPLACE_WITH_JWT
+
+### Rename image with token (204 if owner, 403 if not owner)
 PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
 Content-Type: application/json
+Authorization: Bearer REPLACE_WITH_JWT
 
 {
   "name": "Sheepdog herding a sheep"
 }
 
-### Rename image bad request
+### Rename image without token
 PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
 Content-Type: application/json
 
 {
-  "title": "Wrong field name"
+  "name": "i am going to fail!"
+}
+
+### Rename image with non-owner token
+PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
+Content-Type: application/json
+Authorization: Bearer REPLACE_WITH_NON_OWNER_JWT
+
+{
+  "name": "i'm going to fail!"
+}
+
+### Rename image bad request
+PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
+Content-Type: application/json
+Authorization: Bearer REPLACE_WITH_JWT
+
+{
+  "title": "i'm a bad request!"
 }
 
 ### Rename image not found
 PATCH http://localhost:3000/api/images/000000000000000000000000
 Content-Type: application/json
+Authorization: Bearer REPLACE_WITH_JWT
 
 {
   "name": "name"
@@ -31,6 +56,7 @@ Content-Type: application/json
 ### Rename image too large, over 100 chars
 PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
 Content-Type: application/json
+Authorization: Bearer REPLACE_WITH_JWT
 
 {
   "name": "iamwaytoooooooooooooooooooooooooooooooooooooooooooooooooooooloooooooooooooooooooooooooooooooonggggggggggggg"
@@ -64,7 +90,7 @@ Content-Type: application/json
   "username": "test"
 }
 
-### Login success (200)
+### Login success
 POST http://localhost:3000/api/auth/tokens
 Content-Type: application/json
 
@@ -73,28 +99,28 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Login incorrect password (401)
-POST http://localhost:3000/api/auth/tokens
-Content-Type: application/json
-
-{
-  "username": "test",
-  "password": "wrong-password"
-}
-
-### Login unknown user (401)
-POST http://localhost:3000/api/auth/tokens
-Content-Type: application/json
-
-{
-  "username": "not-a-user",
-  "password": "password"
-}
-
-### Login malformed request (400)
+### Login bad request
 POST http://localhost:3000/api/auth/tokens
 Content-Type: application/json
 
 {
   "username": "test"
+}
+
+### Login with incorrect password
+POST http://localhost:3000/api/auth/tokens
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "wrongpassword"
+}
+
+### Login unknown user
+POST http://localhost:3000/api/auth/tokens
+Content-Type: application/json
+
+{
+  "username": "dne",
+  "password": "password"
 }
