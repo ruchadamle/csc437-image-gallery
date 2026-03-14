@@ -33,4 +33,13 @@ export class CredentialsProvider {
 
         return true;
     }
+
+    async verifyPassword(username, plaintextPassword) {
+        const storedCreds = await this.credsCollection.findOne({ username });
+        if (!storedCreds || typeof storedCreds.password !== "string") {
+            return false;
+        }
+
+        return bcrypt.compare(plaintextPassword, storedCreds.password);
+    }
 }

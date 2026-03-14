@@ -63,3 +63,38 @@ Content-Type: application/json
 {
   "username": "test"
 }
+
+### Login success (200)
+POST http://localhost:3000/api/auth/tokens
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "password"
+}
+
+### Login incorrect password (401)
+POST http://localhost:3000/api/auth/tokens
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "wrong-password"
+}
+
+### Login unknown user (401)
+POST http://localhost:3000/api/auth/tokens
+Content-Type: application/json
+
+{
+  "username": "not-a-user",
+  "password": "password"
+}
+
+### Login malformed request (400)
+POST http://localhost:3000/api/auth/tokens
+Content-Type: application/json
+
+{
+  "username": "test"
+}
