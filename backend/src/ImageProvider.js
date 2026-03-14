@@ -77,4 +77,9 @@ export class ImageProvider {
 
         return updateResult.matchedCount;
     }
+
+    async createImage(image) {
+        const insertResult = await this.imageCollection.insertOne(image);
+        return insertResult.insertedId;
+    }
 }
