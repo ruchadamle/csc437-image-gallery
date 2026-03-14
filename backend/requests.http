@@ -1,10 +1,10 @@
 ### Get all images
 GET http://localhost:3000/api/images
 
-### Get one image by ID (replace with an ID from your DB)
+### Get one image by ID
 GET http://localhost:3000/api/images/69ace105da34209d3166e9f6
 
-### Rename image (success: 204 No Content)
+### Rename image
 PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
 Content-Type: application/json
 
@@ -12,7 +12,7 @@ Content-Type: application/json
   "name": "Sheepdog herding a sheep"
 }
 
-### Rename image bad request (400: missing required 'name' string field)
+### Rename image bad request
 PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
 Content-Type: application/json
 
@@ -20,18 +20,46 @@ Content-Type: application/json
   "title": "Wrong field name"
 }
 
-### Rename image not found (404: valid ObjectId, likely does not exist)
+### Rename image not found
 PATCH http://localhost:3000/api/images/000000000000000000000000
 Content-Type: application/json
 
 {
-  "name": "Does not matter"
+  "name": "name"
 }
 
-### Rename image too large (413: name over 100 chars)
+### Rename image too large, over 100 chars
 PATCH http://localhost:3000/api/images/69ace105da34209d3166e9f6
 Content-Type: application/json
 
 {
   "name": "iamwaytoooooooooooooooooooooooooooooooooooooooooooooooooooooloooooooooooooooooooooooooooooooonggggggggggggg"
+}
+
+### Register user
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "username": "test",
+  "email": "test@test.com",
+  "password": "password"
+}
+
+### Register duplicate username
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "username": "test",
+  "email": "another@test.com",
+  "password": "password"
+}
+
+### Register user with bad data
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "username": "test"
 }
