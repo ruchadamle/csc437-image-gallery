@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { fetchOne } from "./ImageFetcher.js";
 import { ImageNameEditor } from "./ImageNameEditor.jsx";
 
-export function ImageDetails() {
+export function ImageDetails({ authToken }) {
     const { imageId } = useParams();
     const [imageData, setImageData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +25,7 @@ export function ImageDetails() {
                     return;
                 }
 
-                const fetchedImage = await fetchOne(imageId);
+                const fetchedImage = await fetchOne(imageId, authToken);
                 if (isActive) {
                     setImageData(fetchedImage);
                 }
@@ -45,14 +45,14 @@ export function ImageDetails() {
         return () => {
             isActive = false;
         };
-    }, [imageId]);
+    }, [authToken, imageId]);
 
     if (isLoading) {
         return <p>Loading...</p>;
     }
 
     if (error !== "") {
-        return <p>{error}</p>;
+        return <p className="ErrorMessage">{error}</p>;
     }
 
     if (!imageData) {
@@ -68,6 +68,7 @@ export function ImageDetails() {
             <ImageNameEditor
                 imageId={String(imageData._id ?? imageId)}
                 initialValue={imageData.name}
+                authToken={authToken}
                 onRenameSuccess={newName => {
                     setImageData(prevImage =>
                         prevImage ? { ...prevImage, name: newName } : prevImage

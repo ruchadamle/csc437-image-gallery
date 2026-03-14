@@ -14,8 +14,15 @@ async function readErrorMessage(response) {
     return `Error: HTTP ${response.status} ${response.statusText}`;
 }
 
-async function fetchJson(url) {
-    const response = await fetch(url);
+function buildAuthHeaders(authToken, extraHeaders = {}) {
+    return {
+        ...extraHeaders,
+        Authorization: `Bearer ${authToken}`
+    };
+}
+
+async function fetchJson(url, options = {}) {
+    const response = await fetch(url, options);
     if (!response.ok) {
         throw new Error(await readErrorMessage(response));
     }
@@ -23,12 +30,16 @@ async function fetchJson(url) {
     return response.json();
 }
 
-export function fetchAll() {
-    return fetchJson("/api/images");
+export function fetchAll(authToken) {
+    return fetchJson("/api/images", {
+        headers: buildAuthHeaders(authToken)
+    });
 }
 
-export async function fetchOne(imageId) {
-    const response = await fetch(`/api/images/${encodeURIComponent(imageId)}`);
+export async function fetchOne(imageId, authToken) {
+    const response = await fetch(`/api/images/${encodeURIComponent(imageId)}`, {
+        headers: buildAuthHeaders(authToken)
+    });
     if (response.status === 404) {
         return null;
     }
@@ -40,12 +51,12 @@ export async function fetchOne(imageId) {
     return response.json();
 }
 
-export async function renameImage(imageId, newName) {
+export async function renameImage(imageId, newName, authToken) {
     const response = await fetch(`/api/images/${encodeURIComponent(imageId)}`, {
         method: "PATCH",
-        headers: {
+        headers: buildAuthHeaders(authToken, {
             "Content-Type": "application/json"
-        },
+        }),
         body: JSON.stringify({ name: newName })
     });
 

@@ -54,7 +54,8 @@ export function registerAuthRoutes(app, credentialsProvider) {
                 });
             }
 
-            return res.status(201).send();
+            const token = await generateAuthToken(username.trim());
+            return res.status(201).send({ token });
         } catch (err) {
             console.error(err);
             return res.status(500).send({ error: "Internal Server Error" });

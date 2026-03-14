@@ -1,9 +1,17 @@
-.LoginPage-form > * {
+.LoginPage-form fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.LoginPage-form fieldset > * {
     display: block;
 }
-.LoginPage-form > label {
+
+.LoginPage-form fieldset > label {
     margin-top: 1em;
 }
-.LoginPage-form > input[type="submit"] {
+
+.LoginPage-form fieldset > input[type="submit"] {
     margin-top: 1em;
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { renameImage } from "./ImageFetcher.js";
 
-export function ImageNameEditor({ imageId, initialValue, onRenameSuccess }) {
+export function ImageNameEditor({ imageId, initialValue, authToken, onRenameSuccess }) {
     const [isEditingName, setIsEditingName] = useState(false);
     const [nameInput, setNameInput] = useState(initialValue || "");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +18,7 @@ export function ImageNameEditor({ imageId, initialValue, onRenameSuccess }) {
         setError("");
 
         try {
-            await renameImage(imageId, nameInput);
+            await renameImage(imageId, nameInput, authToken);
             if (typeof onRenameSuccess === "function") {
                 onRenameSuccess(nameInput);
             }
@@ -54,7 +54,7 @@ export function ImageNameEditor({ imageId, initialValue, onRenameSuccess }) {
                 </button>
                 <div aria-live="polite">
                     {isSubmitting && <p>Renaming image...</p>}
-                    {error !== "" && <p>{error}</p>}
+                    {error !== "" && <p className="ErrorMessage">{error}</p>}
                 </div>
             </div>
         );
@@ -62,7 +62,9 @@ export function ImageNameEditor({ imageId, initialValue, onRenameSuccess }) {
         return (
             <div style={{ margin: "1em 0" }}>
                 <button onClick={handleEditPressed}>Edit name</button>
-                <div aria-live="polite">{error !== "" && <p>{error}</p>}</div>
+                <div aria-live="polite">
+                    {error !== "" && <p className="ErrorMessage">{error}</p>}
+                </div>
             </div>
         );
     }

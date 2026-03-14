@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchAll } from "./ImageFetcher.js";
 
-export function useImages() {
+export function useImages(authToken) {
     const [imageData, setImageData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
@@ -9,7 +9,7 @@ export function useImages() {
     useEffect(() => {
         async function doFetch() {
             try {
-                const result = await fetchAll();
+                const result = await fetchAll(authToken);
                 setImageData(result);
             } catch (err) {
                 setError(err instanceof Error ? err.message : String(err));
@@ -19,7 +19,7 @@ export function useImages() {
         }
 
         doFetch();
-    }, []);
+    }, [authToken]);
 
     return { imageData, isLoading, error };
 }
