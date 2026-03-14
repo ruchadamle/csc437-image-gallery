@@ -34,7 +34,7 @@ function App() {
                     path={VALID_ROUTES.UPLOAD}
                     element={
                         <ProtectedRoute authToken={authToken}>
-                            <UploadPage />
+                            <UploadPage authToken={authToken} />
                         </ProtectedRoute>
                     }
                 />
